@@ -1,4 +1,4 @@
-# 🎓 EduMetrics Analytics
+# EduMetrics Analytics
 ### Plataforma Integral de Analítica de Rendimiento Académico y Alerta Temprana Universitaria
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
@@ -11,7 +11,7 @@
 
 ---
 
-## 📖 1. Introducción y Propósito
+## 1. Introducción y Propósito
 
 **EduMetrics** es una solución de software de arquitectura desacoplada (*Full-Stack*) diseñada para responder a uno de los mayores desafíos en la educación superior: **la detección oportuna de estudiantes en riesgo de deserción y el análisis multifactorial del rendimiento académico**.
 
@@ -19,7 +19,7 @@ A diferencia de los sistemas tradicionales basados únicamente en consultas SQL 
 
 ---
 
-## 🔄 2. Flujo General del Sistema (End-to-End)
+## 2. Flujo General del Sistema (End-to-End)
 
 El sistema opera bajo un ciclo de vida continuo dividido en 4 fases sincronizadas entre **Frontend**, **Backend**, **Base de Datos** y el **Motor Analítico**:
 
@@ -77,7 +77,7 @@ El sistema opera bajo un ciclo de vida continuo dividido en 4 fases sincronizada
 
 ---
 
-## 🎯 3. Alineación con la Rúbrica de Evaluación
+## 3. Alineación con la Rúbrica de Evaluación
 
 | Criterio | Peso | Requisito para 20 Puntos | Implementación en EduMetrics |
 | :--- | :---: | :--- | :--- |
@@ -90,7 +90,7 @@ El sistema opera bajo un ciclo de vida continuo dividido en 4 fases sincronizada
 
 ---
 
-## 🛠️ 4. Stack Tecnológico
+## 4. Stack Tecnológico
 
 ### Backend (Python)
 * **FastAPI (v0.110+):** Framework web asíncrono de alto rendimiento con generación automática de especificaciones OpenAPI.
@@ -109,50 +109,83 @@ El sistema opera bajo un ciclo de vida continuo dividido en 4 fases sincronizada
 
 ---
 
-## 📂 5. Estructura del Repositorio
+## 5. Estructura del Proyecto (Backend y Frontend)
+
+El proyecto adopta una arquitectura **Full-Stack desacoplada** organizada en dos carpetas independientes: **`edumetrics-backend`** (servidor API en Python, persistencia SQLite y motor analítico con Pandas/NumPy) y **`edumetrics-frontend`** (interfaz interactiva desarrollada en Angular 21 con Chart.js).
 
 ```text
-edumetrics-backend/
-├── app/
-│   ├── main.py                     # Entrypoint de FastAPI, middleware CORS y Swagger
-│   ├── core/
-│   │   ├── config.py               # Configuración global y variables de entorno
-│   │   └── database.py             # Conexión SQLAlchemy y generador de sesiones SQLite
-│   ├── models/                     # [POO] Entidades de dominio y tablas ORM
-│   │   ├── estudiante.py           # Entidad Estudiante
-│   │   ├── curso.py                # Entidad Curso
-│   │   └── matricula.py            # Entidad Matricula (calificaciones y asistencia)
-│   ├── schemas/                    # DTOs de validación con Pydantic V2
-│   │   ├── estudiante.py
-│   │   ├── curso.py
-│   │   ├── matricula.py
-│   │   └── analytics.py            # Esquemas de respuesta para los gráficos de Angular
-│   ├── analytics/                  # [MOTOR ANALÍTICO MULTIPARADIGMA]
-│   │   ├── functional_pipeline.py  # Funciones puras, lambdas, closures, reduce, NumPy
-│   │   └── engine.py               # [POO] Clase orquestadora AnalizadorAcademico
-│   ├── services/                   # Capa de Lógica de Negocio
-│   │   ├── academic_service.py     # Extracción pd.read_sql e importador de CSVs
-│   │   └── seeder.py               # Generador de datos sintéticos realistas
-│   └── api/v1/                     # Controladores REST por versión
-│       ├── api.py                  # Router aglutinador
-│       └── endpoints/
-│           ├── analytics.py        # Endpoints para el Dashboard de Angular
-│           ├── matriculas.py       # Carga de actas CSV y registro manual
-│           ├── estudiantes.py      # CRUD de Estudiantes
-│           └── cursos.py           # CRUD de Cursos
-├── data/
-│   └── sample_actas.csv            # Dataset CSV de muestra listo para importar
-├── tests/
-│   ├── conftest.py                 # Fixtures de prueba para pytest
-│   └── test_analytics.py           # Pruebas unitarias de algoritmos y funciones puras
-├── .gitignore
-├── requirements.txt                # Dependencias fijadas del proyecto
-└── README.md                       # Documentación principal del repositorio
+proyecto-edumetrics/
+│
+├── edumetrics-backend/                  # CAPA DEL SERVIDOR (Python & FastAPI)
+│   ├── app/
+│   │   ├── main.py                         # Entrypoint FastAPI, CORS para Angular y Swagger UI
+│   │   ├── core/
+│   │   │   ├── config.py                   # Configuraciones globales, rutas y variables
+│   │   │   └── database.py                 # Conexión SQLAlchemy y sesión SQLite
+│   │   ├── models/                         # [POO] Modelos de Dominio y Tablas ORM
+│   │   │   ├── estudiante.py               # Entidad Estudiante
+│   │   │   ├── curso.py                    # Entidad Curso
+│   │   │   └── matricula.py                # Entidad Matricula (calificaciones y asistencia)
+│   │   ├── schemas/                        # [DTOs] Validación y serialización con Pydantic V2
+│   │   │   ├── estudiante.py
+│   │   │   ├── curso.py
+│   │   │   ├── matricula.py
+│   │   │   └── analytics.py                # Esquemas tipados para los gráficos de Angular
+│   │   ├── analytics/                      # [MOTOR ANALÍTICO MULTIPARADIGMA]
+│   │   │   ├── functional_pipeline.py      # Funciones puras, lambdas, reduce, Z-Score y NumPy
+│   │   │   └── engine.py                   # [POO] Clase orquestadora AnalizadorAcademico
+│   │   ├── services/                       # Capa de Lógica de Negocio
+│   │   │   ├── academic_service.py         # Extracción con pd.read_sql e importador de CSVs
+│   │   │   └── seeder.py                   # Generador de datos sintéticos con correlación realista
+│   │   └── api/v1/                         # Controladores REST
+│   │       ├── api.py                      # Aglutinador de rutas
+│   │       └── endpoints/
+│   │           ├── analytics.py            # Endpoints analíticos (KPIs, correlación, ranking, riesgo)
+│   │           ├── matriculas.py           # Ingesta masiva CSV y registro de notas
+│   │           ├── estudiantes.py          # CRUD de Estudiantes
+│   │           └── cursos.py               # CRUD de Cursos
+│   ├── data/
+│   │   └── sample_actas.csv                # Dataset CSV de prueba para importación
+│   ├── tests/                              # Suite de Pruebas Unitarias (Criterio 4)
+│   │   ├── conftest.py                     # Fixtures para pruebas estadísticas
+│   │   └── test_analytics.py               # Tests automatizados con pytest (100% pasando)
+│   ├── academico.db                        # Base de datos relacional SQLite
+│   ├── requirements.txt                    # Dependencias fijadas del backend
+│   └── README.md                           # Documentación técnica principal
+│
+└── edumetrics-frontend/                 # CAPA DEL CLIENTE (Angular 21)
+    ├── src/
+    │   ├── app/
+    │   │   ├── models/
+    │   │   │   └── analytics.models.ts     # Interfaces TypeScript sincronizadas con los DTOs de FastAPI
+    │   │   ├── services/
+    │   │   │   └── analytics.service.ts    # Servicio HTTP reactivo (RxJS forkJoin y notificaciones)
+    │   │   ├── components/                 # Componentes Standalone interactivos
+    │   │   │   ├── kpi-cards/              # Tarjetas métricas (Total alumnos, promedio, tasa de aprobación)
+    │   │   │   ├── correlation-chart/      # Scatter Plot Asistencia vs Nota con línea de tendencia (Chart.js)
+    │   │   │   ├── course-failure-chart/   # Gráfico de barras de reprobados por asignatura (Chart.js)
+    │   │   │   ├── ranking-table/          # Cuadro de honor con percentiles (Décimo, Quinto, Tercio)
+    │   │   │   ├── risk-table/             # Sistema de alerta temprana por Z-Score e inasistencia
+    │   │   │   └── csv-uploader/           # Subida Drag & Drop de actas CSV y botón de Demo Seed
+    │   │   ├── app.ts                      # Controlador principal con navegación por pestañas y Zoneless
+    │   │   ├── app.html                    # Maquetación del layout y vistas
+    │   │   ├── app.css                     # Estilos de navegación, header y dashboard
+    │   │   └── app.config.ts               # Proveedores de la aplicación (provideHttpClient)
+    │   ├── styles.css                      # Sistema de diseño global (variables CSS, tarjetas, tablas)
+    │   └── index.html                      # Punto de entrada HTML
+    ├── package.json                        # Dependencias de npm (Angular 21, Chart.js)
+    ├── angular.json                        # Configuración del compilador y bundles de Angular
+    └── README.md                           # Guía de ejecución del frontend
 ```
+
+### Descripción de Responsabilidades por Capa:
+
+* **Backend (`edumetrics-backend`):** Centraliza la persistencia relacional en **SQLite (`academico.db`)**, valida los datos entrantes mediante **Pydantic V2** y expone una API REST asíncrona documentada en tiempo real con **Swagger UI**. Aloja el **motor analítico** que combina programación orientada a objetos (`AnalizadorAcademico`) con funciones puras y vectorización matricial (`Pandas` + `NumPy`) para calcular correlaciones de Pearson, Z-Scores de alerta temprana y promedios ponderados.
+* **Frontend (`edumetrics-frontend`):** Aplicación de página única (*SPA*) desarrollada en **Angular 21** bajo arquitectura de componentes independientes (*Standalone*). Consume los endpoints del backend de manera reactiva mediante **RxJS (`forkJoin`)**, cuenta con sincronización para renderizado inmediato (*Zoneless Change Detection*) y proyecta las métricas estadísticas en paneles visuales interactivos con **Chart.js** y tablas con filtrado dinámico.
 
 ---
 
-## ⚡ 6. Puesta en Marcha (Instalación Rápida)
+## 6. Puesta en Marcha (Instalación Rápida)
 
 ### Prerrequisitos
 * Python 3.10 o superior instalado.
@@ -195,7 +228,7 @@ pytest -v
 
 ---
 
-## 📡 7. Catálogo de Endpoints de la API
+## 7. Catálogo de Endpoints de la API
 
 | Método | Ruta | Descripción | Consumo en Frontend |
 | :---: | :--- | :--- | :--- |
@@ -210,7 +243,7 @@ pytest -v
 
 ---
 
-## 💡 8. Ejemplos de Implementación de Paradigmas
+## 8. Ejemplos de Implementación de Paradigmas
 
 ### Integración Funcional + Vectorizada (`app/analytics/functional_pipeline.py`)
 ```python
@@ -251,7 +284,7 @@ class AnalizadorAcademico:
 
 ---
 
-## 👥 Contribución y Buenas Prácticas
+## Contribución y Buenas Prácticas
 * **Convención de Commits:** Commits semánticos (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`).
 * **Guía de Estilo:** Cumplimiento de **PEP 8** y tipado estático con `mypy` / Type Annotations.
 * **Separación de Responsabilidades:** Ningún controlador de FastAPI ejecuta consultas SQL directas ni lógica analítica pesada; todo se delega a la capa de servicios y motores analíticos.
