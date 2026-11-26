@@ -1,0 +1,64 @@
+services:
+  # ============================================================================
+  # Servicio Backend: FastAPI + Pandas + SQLite
+  # ============================================================================
+  backend:
+    build:
+      context: ./edumetrics-backend
+      dockerfile: Dockerfile
+    container_name: edumetrics_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PROJECT_NAME=EduMetrics Analytics API (Docker)
+      - CORS_ORIGINS=["http://localhost:4200","http://127.0.0.1:4200","http://localhost:80","http://localhost"]
+    volumes:
+      # Volumen persistente para la base de datos SQLite
+      - sqlite_data:/app/data_volume
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - edumetrics_network
+
+  # ============================================================================
+  # Servicio Frontend: Angular 21 compilado y servido con Nginx
+  # ============================================================================
+  frontend:
+    build:
+      context: ./edumetrics-frontend
+      dockerfile: Dockerfile
+    container_name: edumetrics_frontend
+    restart: unless-stopped
+    ports:
+      # Acceso disponible en http://localhost:4200 (estándar de Angular)
+      - "4200:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - edumetrics_network
+
+# ==============================================================================
+# Volúmenes Persistentes
+# ==============================================================================
+volumes:
+  sqlite_data:
+    driver: local
+
+# ==============================================================================
+# Red Interna Bridge para Comunicación entre Contenedores
+# ==============================================================================
+networks:
+  edumetrics_network:
+    driver: bridge
